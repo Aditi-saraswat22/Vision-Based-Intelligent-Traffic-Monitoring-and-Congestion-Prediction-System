@@ -1,0 +1,11 @@
+# Computer Vision & AI
+ultralytics  # YOLOv8: The main brain for detecting cars
+opencv-python # OpenCV: To read video files and draw on frames
+cvzone       # A helper library that makes drawing boxes/text easier
+
+# Data Handling (Math & Logic)
+numpy        # For fast math calculations
+pandas       # To save traffic data into Excel/CSV tables
+
+# Dashboard (For Member 3)
+streamlit    # To build the web website/dashboard easily
