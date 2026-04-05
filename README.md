@@ -5,7 +5,7 @@
 <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/>
 <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
 
-# VisionFlow
+# TrafficVision AI
 ### Vision-Based Intelligent Traffic Monitoring & Congestion Prediction
 
 *Real-time vehicle detection · Density estimation · Proactive congestion prediction — using just a camera feed.*
