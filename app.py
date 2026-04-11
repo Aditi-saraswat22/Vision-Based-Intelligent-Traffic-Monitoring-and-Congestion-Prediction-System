@@ -6,9 +6,13 @@ Run: streamlit run app.py
 Models are auto-downloaded from HuggingFace on first run.
 No manual model loading needed for deployment.
 """
-
+# import subprocess
+# import sys
+# subprocess.run([sys.executable, "-m", "pip", "uninstall", "opencv-python", "-y"], 
+#                capture_output=True)
+# subprocess.run([sys.executable, "-m", "pip", "install", "opencv-python-headless", "--quiet"],
+#                capture_output=True)
 import streamlit as st
-import cv2
 import numpy as np
 import torch
 import torch.nn as nn
@@ -412,13 +416,31 @@ def get_weather_risk(weather, lighting, rain):
     return round(multiplier, 2), reasons
 
 def predict_lstm(lstm, buf):
-    if lstm is None or len(buf) < 30: return None
-    d = np.array(list(buf), dtype=np.float32)
-    d[:,0] /= 50.0; d[:,1] /= 3.0
-    with torch.no_grad():
-        return round(float(lstm(torch.tensor(d).unsqueeze(0))) * 3, 2)
+    if lstm is None or len(buf) < 30:
+        return None
+
+    try:
+        d = np.array(list(buf), dtype=np.float32)
+
+        d[:, 0] /= 50.0
+        d[:, 1] /= 3.0
+
+        tensor_input = torch.tensor(d, dtype=torch.float32).unsqueeze(0)
+
+        with torch.no_grad():
+            output = lstm(tensor_input)
+
+        #HANDLE CLASSIFICATION OUTPUT
+        pred_class = torch.argmax(output, dim=1).item()
+
+        return float(pred_class)
+
+    except Exception as e:
+        st.error(f"LSTM prediction error: {e}")
+        return None
 
 def draw_on_frame(frame, count, label, color_hex, pred, fnum, fps, risk_mult):
+    import cv2
     h, w = frame.shape[:2]
     ov = frame.copy()
     cv2.rectangle(ov, (0,0), (w,58), (8,9,15), -1)
@@ -799,6 +821,7 @@ else:
 
     # ── Processing loop ───────────────────────────────────────
     if st.session_state.running:
+        import cv2
         cap     = cv2.VideoCapture(vpath)
         fps_vid = cap.get(cv2.CAP_PROP_FPS) or 25
         buf     = deque(maxlen=30)
